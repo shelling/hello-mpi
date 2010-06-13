@@ -16,6 +16,21 @@ int main ( int argc, char **argv ) {
   MPI_Comm_size( MPI_COMM_WORLD, &size );
 
   printf( "I am process %d of %d\n", rank, size );
+
+  int total;
+  MPI_Reduce( 
+    &rank,
+    &total,
+    1,
+    MPI_INT,
+    MPI_SUM,
+    0,
+    MPI_COMM_WORLD
+  );
+
+  if (rank == 0) {
+    printf("total is %d\n", total);
+  }
   
   MPI_Finalize();
 
