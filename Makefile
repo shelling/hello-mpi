@@ -1,17 +1,20 @@
 
 CC = mpicc
-FLAG = -O2 -std=c99
-MPIEXEC = mpiexec
+CFLAG = -O2 -std=c99 -lm
+
+EXEC_FILE = hello_mpi
+
 RM = rm -f
 
-EXEC_FILE = mpi_hello
+MPIEXEC = mpiexec
+
 
 
 $(EXEC_FILE): main.c
-	$(CC) $(FLAG) $< -o $@
+	$(CC) $(CFLAG) $< -o $@
 
 exec:
-	$(MPIEXEC) -n $(PROCS) ./$(EXEC_FILE)
+	$(MPIEXEC) -n $(n) ./$(EXEC_FILE)
 clean:
 	$(RM) $(EXEC_FILE)
 
