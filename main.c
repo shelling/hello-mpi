@@ -17,6 +17,7 @@ int main ( int argc, char **argv ) {
 
   printf( "I am process %d of %d\n", rank, size );
 
+  // MPI_Reduce()
   int total;
   MPI_Reduce( 
     &rank,
@@ -32,25 +33,27 @@ int main ( int argc, char **argv ) {
     printf("total is %d\n", total);
   }
 
+  // MPI_Send()
   if ( rank < size-1 ) {
     MPI_Send(
       &rank,
-      1,
+      1,                  // count
       MPI_INT,
-      rank+1,            // rank of process to receive data
-      0,
+      rank+1,             // rank of destination
+      0,                  // tag
       MPI_COMM_WORLD
     );
   }
 
+  // MPI_Recv()
   if ( rank > 0 ) {
     int received_data;
     MPI_Recv(
       &received_data,
-      1,
+      1,                  // count
       MPI_INT,
-      rank-1,
-      0,
+      rank-1,             // rank of source
+      0,                  // tag
       MPI_COMM_WORLD,
       &status
     );
