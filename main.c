@@ -29,6 +29,9 @@ int main ( int argc, char **argv ) {
     MPI_COMM_WORLD
   );
 
+  // MPI_Barrier()
+  MPI_Barrier( MPI_COMM_WORLD );
+
   if (rank == 0) {
     printf("total is %d\n", total);
   }
