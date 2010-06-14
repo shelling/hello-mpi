@@ -10,8 +10,8 @@ MPIEXEC = mpiexec
 
 
 
-$(EXEC_FILE): main.c
-	$(CC) $(CFLAG) $< -o $@
+$(EXEC_FILE): main.c utils.h
+	$(CC) $(CFLAG) main.c -o $@
 
 exec:
 	$(MPIEXEC) -n $(n) ./$(EXEC_FILE)

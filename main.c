@@ -2,14 +2,13 @@
 #include <stdlib.h>
 #include <tgmath.h>
 #include <mpi.h>
+#include "utils.h"
 
 int main ( int argc, char **argv ) {
 
   int rank, size;
   MPI_Status status;
-
-  char message[20];
-
+#
   MPI_Init( &argc, &argv );
 
   MPI_Comm_rank( MPI_COMM_WORLD, &rank );
@@ -62,6 +61,51 @@ int main ( int argc, char **argv ) {
     );
     printf("my rank is %d and  I received data from process %d\n", rank, received_data);
   }
+
+  MPI_Barrier( MPI_COMM_WORLD );
+
+  // One-Pointed FDTD
+  long double fdtd_array[10] = {0};
+  long double my_point = 0;
+  long double prev, next;
+
+  for ( int time = 0; time<10; time++ ) {
+
+    switch (rank) {
+      case 0:
+        my_point = 1.0;
+        MPI_Send( &my_point, 1, MPI_LONG_DOUBLE, rank+1, 0, MPI_COMM_WORLD );
+        break;
+
+      case 9:
+        MPI_Send( &my_point, 1, MPI_LONG_DOUBLE, rank-1, 0, MPI_COMM_WORLD );
+        MPI_Recv( &my_point, 1, MPI_LONG_DOUBLE, rank-1, 0, MPI_COMM_WORLD, &status );
+        break;
+
+      default:
+        MPI_Send( &my_point, 1, MPI_LONG_DOUBLE, rank+1, 0, MPI_COMM_WORLD );
+        MPI_Send( &my_point, 1, MPI_LONG_DOUBLE, rank-1, 0, MPI_COMM_WORLD );
+
+        MPI_Recv( &prev, 1, MPI_LONG_DOUBLE, rank-1, 0, MPI_COMM_WORLD, &status );
+        MPI_Recv( &next, 1, MPI_LONG_DOUBLE, rank+1, 0, MPI_COMM_WORLD, &status );
+
+        my_point = ( prev + next ) / 2.0L;
+    
+    }
+
+    MPI_Barrier( MPI_COMM_WORLD );
+
+    MPI_Gather( &my_point, 1, MPI_LONG_DOUBLE, fdtd_array, 1, MPI_LONG_DOUBLE, 0, MPI_COMM_WORLD );
+
+    if ( rank == 0 ) {
+      printf( "timestep %d => ", time );
+      array_inspect_ld( fdtd_array, 10 );
+      printf("\n");
+    }
+
+  }
+
+  MPI_Barrier( MPI_COMM_WORLD );
 
   MPI_Finalize();
 
