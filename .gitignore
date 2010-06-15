@@ -1,3 +1,7 @@
 mpd.hosts
 mpi_hello
 hello_mpi
+hello-mpi
+mpi-hello
+*.o
+.bash*
