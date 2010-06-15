@@ -2,7 +2,7 @@
 CC = mpicc
 CFLAG = -O2 -std=c99 -lm
 
-EXEC_FILE = hello_mpi
+EXEC_FILE = hello-mpi
 
 RM = rm -f
 

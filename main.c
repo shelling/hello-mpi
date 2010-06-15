@@ -1,7 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <tgmath.h>
+
+#include <gsl/gsl_math.h>
+#include <gsl/gsl_const_num.h>
+
 #include <mpi.h>
+
 #include "utils.h"
 
 int main ( int argc, char **argv ) {
